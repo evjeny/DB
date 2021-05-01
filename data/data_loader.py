@@ -16,7 +16,11 @@ def default_worker_init_fn(worker_id):
     imgaug.seed(worker_id)
 
 
-class DataLoader(Configurable, torch.utils.data.DataLoader):
+class _Meta(type(Configurable), type(torch.utils.data.DataLoader)):
+    pass
+
+
+class DataLoader(Configurable, torch.utils.data.DataLoader, metaclass=_Meta):
     dataset = State()
     batch_size = State(default=256)
     num_workers = State(default=10)
@@ -177,7 +181,7 @@ class InfiniteOrderedSampler(Sampler):
         return self.limit_size
 
 
-class InfiniteDataLoader(Configurable, torch.utils.data.DataLoader):
+class InfiniteDataLoader(Configurable, torch.utils.data.DataLoader, metaclass=_Meta):
     dataset = State()
     batch_size = State(default=256)
     num_workers = State(default=10)
@@ -219,7 +223,7 @@ class RandomSampleSampler(Sampler):
         return self.size
 
 
-class RandomSampleDataLoader(Configurable, torch.utils.data.DataLoader):
+class RandomSampleDataLoader(Configurable, torch.utils.data.DataLoader, metaclass=_Meta):
     datasets = State()
     weights = State()
     batch_size = State(default=256)
